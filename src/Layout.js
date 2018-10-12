@@ -58,6 +58,7 @@ class Layout extends Component {
     const y = x_ - 2 * rest.size.y;
     const width = width_ + 2 * rest.size.x;
     const height = height_ + 2 * rest.size.y;
+    console.log(x,y,width,height);
     const inBounds = React.Children.toArray(children).filter(child => {
       if (child.type === Hexagon) {
         const point = HexUtils.hexToPixel(child.props, layout);
@@ -67,6 +68,8 @@ class Layout extends Component {
       }
       return true;
     });
+    console.log(children.length);
+    console.log(inBounds.length);
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
