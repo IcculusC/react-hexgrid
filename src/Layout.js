@@ -50,13 +50,16 @@ class Layout extends Component {
   filterChildren(children, cornerCoords, viewBox, layout) {
     const { x, y, width, height } = viewBox;
     return React.Children.toArray(children).filter(child => {
-      if (!child || !child.props) {
+      if (!child.props) {
         return true;
       }
       if (child.type === Hexagon || (child.props.q !== undefined && child.props.r !== undefined && child.props.s !== undefined)) {
         const point = HexUtils.hexToPixel(child.props, layout);
         const corners = cornerCoords.map(coord => new Point(coord.x + point.x, coord.y + point.y));
         const filtered = corners.filter(corner => corner.x > x && corner.x < width && corner.y > y && corner.y < height);
+        if (filtered.length) {
+          console.log(HexUtils.hexToPixel(child.props, layout));
+        }
         return filtered.length;
       }
       return true;
@@ -69,9 +72,7 @@ class Layout extends Component {
     const cornerCoords = this.calculateCoordinates(orientation);
     const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
     const layout = {...rest, orientation};
-    console.log(React.Children.toArray(children).length)
     const inBounds = this.filterChildren(children, cornerCoords, viewBox, layout);
-    console.log(inBounds.length);
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
