@@ -47,29 +47,30 @@ class Layout extends Component {
     return corners;
   }
 
-  render() {
-    const { children, flat, className, viewBox, ...rest } = this.props;
-    const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
-    const cornerCoords = this.calculateCoordinates(orientation);
-    const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
-    const layout = {...rest, orientation};
+  filterChildren(children, cornerCoords, viewBox, layout) {
     const { x: x_, y: y_, width: width_, height: height_ } = viewBox;
-    const x = x_ - 2 * rest.size.x;
-    const y = x_ - 2 * rest.size.y;
-    const width = width_ + 2 * rest.size.x;
-    const height = height_ + 2 * rest.size.y;
-    console.log(x,y,width,height);
-    const inBounds = React.Children.toArray(children).filter(child => {
+    const x = x_ - 2 * layout.size.x;
+    const y = x_ - 2 * layout.size.y;
+    const width = width_ + 2 * layout.size.x;
+    const height = height_ + 2 * layout.size.y;
+    return React.Children.toArray(children).filter(child => {
       if (child.type === Hexagon) {
         const point = HexUtils.hexToPixel(child.props, layout);
         const corners = cornerCoords.map(coord => new Point(coord.x + point.x, coord.y + point.y));
         const filtered = corners.filter(corner => corner.x > x && corner.x < width && corner.y > y && corner.y < height);
-        return filtered.length > 0;
+        return filtered.length;
       }
       return true;
     });
-    console.log(children.length);
-    console.log(inBounds.length);
+  }
+
+  render() {
+    const { children = [], flat, className, viewBox, ...rest } = this.props;
+    const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
+    const cornerCoords = this.calculateCoordinates(orientation);
+    const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
+    const layout = {...rest, orientation};
+    const inBounds = this.filterChildren(children, cornerCoords, viewBox, layout);
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
