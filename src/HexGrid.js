@@ -29,7 +29,7 @@ class HexGrid extends Component {
   render() {
     const { width, height, viewBox } = this.props
     return (
-      <svg className="grid" width={width} height={height} viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`} version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <svg className="grid" width={width} height={height} viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`} version="1.1" xmlns="http://www.w3.org/2000/svg" onClick={console.log} onMouseDown={console.log} >
         <ViewBoxProvider value={viewBox} >
           {this.props.children}
         </ViewBoxProvider>
