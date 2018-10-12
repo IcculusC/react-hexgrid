@@ -49,7 +49,7 @@ class Layout extends Component {
 
   filterChildren(children, cornerCoords, viewBox, layout) {
     const { x, y, width, height } = viewBox;
-    return React.Children.toArray(children).filter(child => {
+    const filtered_ = React.Children.toArray(children).filter(child => {
       if (!child.props) {
         return true;
       }
@@ -64,6 +64,10 @@ class Layout extends Component {
       }
       return true;
     });
+
+    console.log(filtered_.length);
+
+    return filtered_;
   }
 
   render() {
