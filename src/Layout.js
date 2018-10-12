@@ -89,3 +89,4 @@ export const LayoutContext = React.createContext({
 export const { Provider: LayoutProvider, Consumer: LayoutConsumer } = LayoutContext;
 
 export default props => <ViewBoxConsumer>{viewBox => <Layout {...props} viewBox={viewBox} />}</ViewBoxConsumer>;
+
