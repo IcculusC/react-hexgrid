@@ -20,7 +20,7 @@ exports[`HexGrid should render correctly with custom props 1`] = `
   className="grid"
   height={666}
   version="1.1"
-  viewBox="-150 -150 1100 1100"
+  viewBox="undefined undefined undefined undefined"
   width={888}
   xmlns="http://www.w3.org/2000/svg"
 >

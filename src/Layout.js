@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import HexUtils from './HexUtils';
 import Orientation from './models/Orientation';
 import Point from './models/Point';
+import Hexagon from './Hexagon/Hexagon';
+import Path from './Path';
+import { ViewBoxConsumer } from './HexGrid';
 
 export const LAYOUT_FLAT = new Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
 export const LAYOUT_POINTY = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
@@ -44,11 +48,25 @@ class Layout extends Component {
   }
 
   render() {
-    const { children, flat, className, ...rest } = this.props;
+    const { children, flat, className, viewBox, ...rest } = this.props;
     const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
     const cornerCoords = this.calculateCoordinates(orientation);
     const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
     const layout = {...rest, orientation};
+    const { x: x_, y: y_, width: width_, height: height_ } = viewBox;
+    const x = x_ - 2 * rest.size.x;
+    const y = x_ - 2 * rest.size.y;
+    const width = width_ + 2 * rest.size.x;
+    const height = height_ + 2 * rest.size.y;
+    const inBounds = React.Children.toArray(children).filter(child => {
+      if (child.type === Hexagon) {
+        const point = HexUtils.hexToPixel(child.props, layout);
+        const corners = cornerCoords.map(coord => new Point(coord.x + point.x, coord.y + point.y));
+        const filtered = corners.filter(corner => corner.x > x && corner.x < width && corner.y > y && corner.y < height);
+        return filtered.length > 0;
+      }
+      return true;
+    });
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
@@ -65,4 +83,4 @@ export const LayoutContext = React.createContext({
 })
 export const { Provider: LayoutProvider, Consumer: LayoutConsumer } = LayoutContext;
 
-export default Layout;
+export default props => <ViewBoxConsumer>{viewBox => <Layout {...props} viewBox={viewBox} />}</ViewBoxConsumer>;
