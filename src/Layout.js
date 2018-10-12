@@ -56,16 +56,11 @@ class Layout extends Component {
       if (child.type === Hexagon || (child.props.q !== undefined && child.props.r !== undefined && child.props.s !== undefined)) {
         const point = HexUtils.hexToPixel(child.props, layout);
         const corners = cornerCoords.map(coord => new Point(coord.x + point.x, coord.y + point.y));
-        const filtered = corners.filter(corner => corner.x > x && corner.x < width && corner.y > y && corner.y < height);
-        if (filtered.length) {
-          console.log(HexUtils.hexToPixel(child.props, layout));
-        }
+        const filtered = corners.filter(corner => corner.x > x && corner.x < width + x && corner.y > y && corner.y < + height + y);
         return filtered.length;
       }
       return true;
     });
-
-    console.log(filtered_.length);
 
     return filtered_;
   }
