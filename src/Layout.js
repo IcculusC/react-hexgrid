@@ -70,7 +70,7 @@ class Layout extends Component {
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
-          {children}
+          {inBounds}
         </g>
       </LayoutProvider>
     );
