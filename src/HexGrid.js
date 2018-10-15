@@ -11,7 +11,7 @@ class HexGrid extends Component {
       PropTypes.string.isRequired,
       PropTypes.number.isRequired,
     ]),
-    viewBox: PropTypes.objectOf(PropTypes.number),
+    viewBox: PropTypes.oneOfType([PropTypes.objectOf(PropTypes.number), PropTypes.string]).isReqiured,
     children: PropTypes.node.isRequired
   };
 
@@ -28,9 +28,14 @@ class HexGrid extends Component {
 
   render() {
     const { width, height, viewBox } = this.props
+    let viewBox_;
+    if (typeof viewBox === "string") {
+      [ x, y, width, height ] = viewBox.split(" ");
+      viewBox_ = { x, y, width, height };
+    }
     return (
-      <svg className="grid" width={width} height={height} viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`} version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <ViewBoxProvider value={viewBox} >
+      <svg className="grid" width={width} height={height} viewBox={typeof viewBox === 'string' ? viewBox : `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`} version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <ViewBoxProvider value={viewBox_ ? viewBox : viewBox} >
           {this.props.children}
         </ViewBoxProvider>
       </svg>
