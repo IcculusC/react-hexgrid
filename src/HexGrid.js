@@ -30,7 +30,7 @@ class HexGrid extends Component {
     const { width, height, viewBox } = this.props
     let viewBox_;
     if (typeof viewBox === "string") {
-      [ x, y, width, height ] = viewBox.split(" ");
+      const [ x, y, width, height ] = viewBox.split(" ");
       viewBox_ = { x, y, width, height };
     }
     return (
