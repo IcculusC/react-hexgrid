@@ -35,6 +35,7 @@ class Layout extends Component {
       const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
       const layout = { spacing, orientation, origin, size };
       const cornerCoords = Layout.calculateCoordinates(orientation, size);
+      const { x, y, width, height } = viewBox;
       const inBounds = React.Children.toArray(children).filter(child => {
         if (!child.props) {
           return true;
@@ -77,8 +78,8 @@ class Layout extends Component {
   render() {
     const { children = [], flat, className, size, ...rest } = this.props;
     const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
-    const points = Layout.calculateCoordinates(orientation, size).map(points => `${point.x},${point.y}`).join(' ');
-    const layout = {...rest, size, orientation};
+    const points = Layout.calculateCoordinates(orientation, size).map(point => `${point.x},${point.y}`).join(' ');
+    const layout = {...rest, size, orientation };
     const { inBounds } = this.state;
     return (
       <LayoutProvider value={{ layout, points }}>
