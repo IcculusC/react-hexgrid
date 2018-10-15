@@ -30,7 +30,7 @@ class Layout extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const childCount = React.Children.toArray(nextProps.children).length;
     if(nextProps.viewBox !== prevState.viewBox || childCount !== prevState.childCount) {
-      const { children = [], flat, spacing, orientation, origin, size, viewBox } = nextProps;
+      const { children = [], flat, spacing, origin, size, viewBox } = nextProps;
       if (!childCount) return { viewBox };
       const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
       const layout = { spacing, orientation, origin, size };
