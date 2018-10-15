@@ -27,16 +27,42 @@ class Layout extends Component {
     origin: new Point(0, 0)
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.viewBox !== prevState.viewBox || React.Children.toArray(nextProps.children).length !== prevState.childCount) {
+      const { children = [], flat, layout, size, viewBox } = nextProps;
+      const childCount = React.Children.toArray(children).length;
+      if (!childCount) return null;
+      const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
+      const cornerCoords = Layout.calculateCoordinates(orientation, size);
+      const inBounds = React.Children.toArray(children).filter(child => {
+        if (!child.props) {
+          return true;
+        }
+        if (child.type === Hexagon || (child.props.q !== undefined && child.props.r !== undefined && child.props.s !== undefined)) {
+          const point = HexUtils.hexToPixel(child.props, layout);
+          const corners = cornerCoords.map(coord => new Point(coord.x + point.x, coord.y + point.y));
+          const filtered = corners.filter(corner => corner.x > x && corner.x < width + x && corner.y > y && corner.y < + height + y);
+          return filtered.length;
+        }
+        return true;
+      });
+
+      return { inBounds, childCount };
+    }
+    return null;
+  }
+
+  state = { inBounds: {}, childCount: 0 };
+
   getPointOffset(corner, orientation, size) {
     let angle = 2.0 * Math.PI * (corner + orientation.startAngle) / 6;
     return new Point(size.x * Math.cos(angle), size.y * Math.sin(angle));
   }
 
   // TODO Refactor
-  calculateCoordinates(orientation) {
+  static calculateCoordinates(orientation, size) {
     const corners = [];
     const center = new Point(0, 0);
-    const { size } = this.props;
 
     Array.from(new Array(6), (x, i) => {
       const offset = this.getPointOffset(i, orientation, size);
@@ -66,12 +92,12 @@ class Layout extends Component {
   }
 
   render() {
-    const { children = [], flat, className, viewBox, ...rest } = this.props;
+    const { children = [], flat, className, size, viewBox, ...rest } = this.props;
     const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
-    const cornerCoords = this.calculateCoordinates(orientation);
+    const cornerCoords = Layout.calculateCoordinates(orientation, size);
     const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
-    const layout = {...rest, orientation};
-    const inBounds = this.filterChildren(children, cornerCoords, viewBox, layout);
+    const layout = {...rest, size, orientation};
+    const { inBounds } = this.state;
     return (
       <LayoutProvider value={{ layout, points }}>
         <g className={className}>
