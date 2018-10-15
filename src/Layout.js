@@ -28,7 +28,7 @@ class Layout extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const childCount = React.Children.toArray(children).length;
+    const childCount = React.Children.toArray(nextProps.children).length;
     if(nextProps.viewBox !== prevState.viewBox || childCount !== prevState.childCount) {
       const { children = [], flat, layout, size, viewBox } = nextProps;
       if (!childCount) return { viewBox };
@@ -76,8 +76,7 @@ class Layout extends Component {
   render() {
     const { children = [], flat, className, size, ...rest } = this.props;
     const orientation = (flat) ? LAYOUT_FLAT : LAYOUT_POINTY;
-    const cornerCoords = Layout.calculateCoordinates(orientation, size);
-    const points = cornerCoords.map(point => `${point.x},${point.y}`).join(' ');
+    const points = Layout.calculateCoordinates(orientation, size).map(points => `${point.x},${point.y}`).join(' ');
     const layout = {...rest, size, orientation};
     const { inBounds } = this.state;
     return (
