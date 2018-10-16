@@ -11,7 +11,7 @@ class HexGrid extends Component {
       PropTypes.string.isRequired,
       PropTypes.number.isRequired,
     ]),
-    viewBox: PropTypes.objectOf(PropTypes.number),
+    viewBox: PropTypes.objectOf(PropTypes.number).isReqiured,
     children: PropTypes.node.isRequired
   };
 
